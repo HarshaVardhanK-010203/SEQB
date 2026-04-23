@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Software Engineering Question Bank System</title>
+    <!-- Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0d1117;
+            --sidebar: #161b22;
+            --card: #21262d;
+            --accent: #58a6ff;
+            --success: #238636;
+            --text: #c9d1d9;
+            --text-muted: #8b949e;
+            --border: #30363d;
+            --mono: 'JetBrains Mono', 'Courier New', Courier, monospace;
+            --sans: 'Inter', -apple-system, system-ui, sans-serif;
+            --star-yellow: #e3b341;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--sans);
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navbar / Top Bar */
+        .navbar {
+            background-color: var(--sidebar);
+            border-bottom: 1px solid var(--border);
+            padding: 0.75rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 64px;
+        }
+
+        .nav-brand {
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--accent);
+        }
+
+        /* Sidebar/Controls */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            min-height: calc(100vh - 64px);
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .sidebar {
+            background-color: var(--sidebar);
+            padding: 1.5rem;
+            border-right: 1px solid var(--border);
+            position: sticky;
+            top: 64px;
+            height: calc(100vh - 64px);
+            overflow-y: auto;
+        }
+
+        .search-box {
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 8px 12px;
+            background-color: #010409;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(31, 111, 235, 0.3);
+        }
+
+        .filter-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-select {
+            width: 100%;
+            padding: 6px 10px;
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding: 0.5rem 0;
+        }
+
+        .toggle-switch {
+            width: 34px;
+            height: 18px;
+            background-color: #30363d;
+            border-radius: 10px;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .toggle-switch.active {
+            background-color: var(--accent);
+        }
+
+        .toggle-circle {
+            width: 14px;
+            height: 14px;
+            background-color: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch.active .toggle-circle {
+            transform: translateX(16px);
+        }
+
+        .control-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            color: var(--text);
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+            text-align: center;
+        }
+
+        .btn-primary { 
+            background: var(--success); 
+            border-color: #2ea043; 
+            color: #fff; 
+        }
+
+        .btn:hover { background-color: #30363d; }
+        .btn-primary:hover { background-color: #2c974b; }
+
+        /* Question Cards */
+        #mainContent {
+            padding: 2rem;
+            background-color: #010409;
+        }
+
+        .module-section {
+            margin-bottom: 3rem;
+        }
+
+        .module-title {
+            font-size: 18px;
+            margin-bottom: 1rem;
+            color: #fff;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-header {
+            font-family: var(--mono);
+            font-size: 12px;
+            font-weight: 700;
+            margin: 1.5rem 0 1rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card {
+            background-color: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+            transition: background 0.2s;
+        }
+
+        .card:hover {
+            background-color: var(--sidebar);
+        }
+
+        .card.expanded {
+            border-color: var(--accent);
+            background-color: #0d1117;
+        }
+
+        .card-header {
+            padding: 12px 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        .question-text {
+            font-weight: 500;
+            font-size: 13px;
+            line-height: 1.5;
+            color: var(--text);
+            flex: 1;
+        }
+
+        .card-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-left: 1rem;
+        }
+
+        .action-icon {
+            cursor: pointer;
+            font-size: 14px;
+            transition: color 0.2s;
+            color: var(--text-muted);
+        }
+
+        .action-icon:hover { color: var(--text); }
+        .action-icon.starred { color: var(--star-yellow); }
+        .action-icon.completed { color: #3fb950; }
+
+        .card-body {
+            padding: 24px 32px;
+            display: none;
+            border-top: 1px solid var(--border);
+            background-color: #010409;
+        }
+
+        .card.expanded .card-body {
+            display: block;
+        }
+
+        .arrow {
+            transition: transform 0.3s;
+            font-size: 10px;
+            opacity: 0.5;
+        }
+
+        .card.expanded .arrow {
+            transform: rotate(180deg);
+        }
+
+        /* Badge Styling */
+        .badge {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-right: 8px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .badge-2m { background: rgba(88, 166, 255, 0.1); color: var(--accent); border: 1px solid var(--accent); }
+        .badge-8m { background: rgba(242, 125, 38, 0.1); color: #F27D26; border: 1px solid #F27D26; }
+
+        /* Answer Content Styling */
+        .ans-section { margin-bottom: 1.5rem; }
+        
+        .section-title { 
+            font-family: var(--mono); 
+            color: var(--accent); 
+            font-size: 12px; 
+            text-transform: uppercase; 
+            margin-bottom: 12px; 
+            display: block; 
+            border-bottom: 1px solid var(--border); 
+            padding-bottom: 4px; 
+        }
+
+        .ans-text { font-size: 14px; line-height: 1.6; color: var(--text); }
+        
+        .point-item { 
+            margin-bottom: 12px; 
+            border-left: 2px solid var(--border); 
+            padding-left: 16px; 
+            font-size: 14px;
+        }
+        
+        .point-name { font-weight: 700; color: #fff; margin-right: 4px; }
+
+        .diagram-box {
+            font-family: var(--mono);
+            background: #161b22;
+            padding: 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            margin: 16px 0;
+            color: var(--success);
+            line-height: 1.3;
+            overflow-x: auto;
+            white-space: pre;
+            border: 1px solid var(--border);
+        }
+
+        /* Revision Mode */
+        .revision-mode .card-body {
+            display: none !important;
+        }
+        .revision-mode .card.revealed .card-body {
+            display: block !important;
+        }
+
+        /* Scroll Top */
+        .scroll-top {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            width: 40px;
+            height: 40px;
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 1001;
+        }
+
+        .scroll-top:hover { background-color: var(--sidebar); border-color: var(--accent); }
+
+        .scroll-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Stats bar */
+        .stats-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: var(--sidebar);
+            padding: 12px 16px;
+            border-radius: 6px;
+            flex: 1;
+            min-width: 120px;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-val { font-size: 20px; font-weight: 700; color: #fff; }
+        .stat-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Progress Bar in Sidebar */
+        .progress-container {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+        .progress-label { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; }
+        .progress-bg { height: 4px; background: #30363d; border-radius: 2px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--success); transition: width 0.4s ease; }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem;
+            color: var(--text-muted);
+            border: 1px dashed var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .animate-fade {
+            animation: fadeIn 0.3s ease forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="#" class="nav-brand">Software Engineering</a>
+        <div class="nav-links">
+            <a href="question-bank.html" class="nav-link">Question Bank</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <aside class="sidebar">
+            <div class="search-box">
+                <label class="filter-label">Search</label>
+                <input type="text" id="searchInput" class="search-input" placeholder="Search questions or answers...">
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Module</label>
+                <select id="moduleFilter" class="filter-select">
+                    <option value="all">All Modules</option>
+                    <option value="1">Module I</option>
+                    <option value="2">Module II</option>
+                    <option value="3">Module III</option>
+                    <option value="4">Module IV</option>
+                    <option value="5">Module V</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Marks</label>
+                <select id="marksFilter" class="filter-select">
+                    <option value="all">All Marks</option>
+                    <option value="2">2 Marks</option>
+                    <option value="8">8 Marks</option>
+                </select>
+            </div>
+
+            <div class="toggle-container">
+                <span class="filter-label" style="margin:0">Revision Mode</span>
+                <div id="revisionToggle" class="toggle-switch">
+                    <div class="toggle-circle"></div>
+                </div>
+            </div>
+
+            <div class="control-btns">
+                <button id="showAllBtn" class="btn btn-primary">Show All Answers</button>
+                <button id="hideAllBtn" class="btn">Hide All Answers</button>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-label">Overall Progress</div>
+                <div class="progress-bg">
+                    <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+                <p style="font-size: 10px; color: var(--text-muted); text-align: center;">
+                    Software Engineering Question Bank v4.2
+                </p>
+            </div>
+        </aside>
+
+        <main id="mainContent">
+            <div class="stats-bar">
+                <div class="stat-card">
+                    <span class="stat-label">Total Questions</span>
+                    <span id="statTotal" class="stat-val">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Completed</span>
+                    <span id="statCompleted" class="stat-val">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Important</span>
+                    <span id="statImportant" class="stat-val">0</span>
+                </div>
+            </div>
+
+            <div id="questionsContainer">
+                <!-- Dynamically Populated -->
+            </div>
+        </main>
+    </div>
+
+    <div id="scrollTop" class="scroll-top">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: white;"><polyline points="18 15 12 9 6 15"></polyline></svg>
+    </div>
+
+    <script>
+        const questionData = [
+            {
+                id: "m1-2-1", module: 1, marks: 2, 
+                q: "What are the advantages of adhering to life cycle models for software.",
+                ans: "• Ensures structured progression which improves project management and predictability.<br>• Facilitates standard procedures for verification and validation at every phase.<br>• Enables effective resource allocation and tracking of project milestones.<br>• Enhances software quality by identifying defects early in the development cycle."
+            },
+            {
+                id: "m1-2-2", module: 1, marks: 2,
+                q: "Categorize the phases of Unified Process Model.",
+                ans: "• Inception phase: Requirement elicitation and scope definition.<br>• Elaboration phase: Architecture design and detailed planning.<br>• Construction phase: Core coding and product development.<br>• Transition phase: Product delivery to users and maintenance."
+            },
+            {
+                id: "m1-2-3", module: 1, marks: 2,
+                q: "List out and define the different types of Software Myths.",
+                ans: "• Management Myths: False beliefs by managers (e.g., adding more people to a late project).<br>• Customer Myths: False beliefs by users (e.g., changes can be easily accommodated at any stage).<br>• Practitioner Myths: False beliefs by developers (e.g., 'until the program runs, we have no way of checking quality')."
+            },
+            {
+                id: "m1-2-4", module: 1, marks: 2,
+                q: "Sketch Software engineering layered technology.",
+                ans: "• Tools: Automated support for process and methods.<br>• Methods: Technical 'how-to' for building software.<br>• Process: The glue that holds layers together.<br>• Quality Focus: The foundational bedrock for software engineering."
+            },
+            {
+                id: "m1-2-5", module: 1, marks: 2,
+                q: "Define Agile Process.",
+                ans: "Agile process is an iterative approach to software development that focuses on continuous feedback, small functional releases, and collaborative self-organizing teams. It prioritizes adaptability over rigid planning to deliver customer value rapidly."
+            },
+            {
+                id: "m1-2-6", module: 1, marks: 2,
+                q: "Write the core Agile modelling Principles.",
+                ans: "• Model with a purpose: Focus on creating models that add value.<br>• Simple models: Avoid over-engineering; keep diagrams minimal.<br>• Embrace change: Accept that requirements will evolve.<br>• Working software is the primary measure of progress."
+            },
+            {
+                id: "m1-2-7", module: 1, marks: 2,
+                q: "Name the phases of Extreme Programming.",
+                ans: "• Planning: User stories and release planning.<br>• Design: Simple design, CRC cards, and spikes.<br>• Coding: Pair programming, unit testing, and refactoring.<br>• Testing: Acceptance testing and continuous integration."
+            },
+            {
+                id: "m1-2-8", module: 1, marks: 2,
+                q: "Name the life cycle phases of Dynamic Systems Development Method.",
+                ans: "• Feasibility Study and Business Study.<br>• Functional Model Iteration.<br>• Design and Build Iteration.<br>• Implementation Phase."
+            },
+            {
+                id: "m1-2-9", module: 1, marks: 2,
+                q: "Name the Specialized Process Models.",
+                ans: "• Component-Based Development (CBD).<br>• Formal Methods Model (Mathematical specifications).<br>• Aspect-Oriented Software Development (AOSD)."
+            },
+            {
+                id: "m1-2-10", module: 1, marks: 2,
+                q: "Write the purpose of scrum model.",
+                ans: "• To manage complex projects using cross-functional, self-organizing teams.<br>• To deliver functional software in short iterations called 'Sprints'.<br>• To facilitate transparency and adaptation through daily meetings and reviews."
+            },
+            {
+                id: "m1-8-1", module: 1, marks: 8,
+                q: "Describe five activities of a generic process framework for Software Engineering.",
+                ans: {
+                    def: "A generic process framework defines the foundational activities required to build high-quality software, providing a roadmap for development team actions regardless of project size or complexity. It establishes a discipline that ensures technical rigor and project management efficiency throughout the software life cycle.",
+                    points: [
+                        { name: "Communication", desc: "This activity involves heavy collaboration with customers and stakeholders to gather requirements. It ensures that the development team understands the business context and objective of the software being built, facilitating a clear scope definition and identified constraints." },
+                        { name: "Planning", desc: "The team defines the 'roadmap' by describing technical tasks, risks, resources, work products, and a schedule to manage the development effort effectively. This activity is critical for setting realistic milestones and ensuring that the project stays within budget and time limits." },
+                        { name: "Modeling", desc: "Includes the creation of analysis and design models to better understand requirements and the technical architecture. By modeling the system's behavior and structure before code construction begins, the team can identify potential design flaws and optimize the overall system architecture." },
+                        { name: "Construction", desc: "This phase focuses on the actual generation of code (manual or automated) and the comprehensive testing required to uncover errors. It involves implementing the design models into a functional program while applying unit and integration tests to verify the correctness of the logic." },
+                        { name: "Deployment", desc: "The software is delivered to the customer who evaluates the product and provides feedback based on their original requirements. This activity includes the formal release of the software, user training, and the establishment of a support mechanism for initial troubleshooting." },
+                        { name: "Management Coordination", desc: "Consists of parallel umbrella activities that support the five primary framework tasks. These include project tracking, technical reviews, software configuration management, and quality assurance, ensuring that the development process remains controlled and high-quality." }
+                    ],
+                    diag: "+---------------+   +------------+   +----------+   +--------------+   +------------+\n| Communication |-->|  Planning  |-->| Modeling |-->| Construction |-->| Deployment |\n+---------------+   +------------+   +----------+   +--------------+   +------------+\n      ^                                                                     |\n      +----------------------------- Feedback Loop -------------------------+",
+                    ex: "A startup building a mobile app uses Communication to interview users, Planning to set a 3-month launch goal, Modeling to sketch UI wireframes, and Construction to code features before Deployment to the App Store for user testing.",
+                    conc: "By following these five generic activities, organizations can ensure a disciplined approach that balances technical rigor with project management efficiency. This framework provides the stability and control necessary to deliver successful software products in any industrial setting."
+                }
+            },
+            {
+                id: "m1-8-2", module: 1, marks: 8,
+                q: "Illustrate and Explain Incremental Model.",
+                ans: {
+                    def: "The Incremental Model combines elements of the linear waterfall model with the iterative philosophy of prototyping, delivering software in small, usable pieces called increments. It is particularly effective for projects where initial requirements are well-defined but the full system needs to be deployed in stages.",
+                    points: [
+                        { name: "Core Product Delivery", desc: "The first increment is usually the core product, meeting basic requirements but lacking many non-essential features for early user evaluation. This allows the organization to establish a presence in the market while the rest of the application is still being developed." },
+                        { name: "Iterative Refinement", desc: "Subsequent increments are developed and delivered, each adding functionality to the previously installed base until the full system is realized. Each iteration goes through its own analysis, design, coding, and testing phases to ensure high reliability." },
+                        { name: "Parallel Development", desc: "Different modules or increments can be developed in parallel by separate teams, provided the interfaces between modules are clearly defined. This concurrency can significantly reduce the total time-to-market for the complete software suite." },
+                        { name: "Risk Management", desc: "Risks are reduced because the core architecture is tested early in the life cycle, allowing for adjustments before the entire budget is spent. If a failure occurs in a specific increment, it is easier to isolate and fix without affecting the entire project." },
+                        { name: "Customer Feedback", desc: "Users get to experience a working portion of the software early, leading to better requirement validation and higher customer satisfaction. This early feedback loop ensures that the final product closely aligns with the actual needs of the end-users." },
+                        { name: "Flexibility in Change", desc: "It is easier to accommodate changes in requirements for future increments based on lessons learned from the deployment of previous ones. This adaptability makes the model more robust to shifting business priorities compared to traditional linear models." }
+                    ],
+                    diag: "Increment 1: Analysis -> Design -> Code -> Test -> [Core Product Deployment]\nIncrement 2: Analysis -> Design -> Code -> Test -> [Functional Enhancements]\nIncrement 3: Analysis -> Design -> Code -> Test -> [Final Integrated System]",
+                    ex: "An ERP software company first releases the 'Accounting' module as Increment 1, then 'Inventory Management' as Increment 2, and finally 'HR Management' as Increment 3, allowing the client to start operations immediately while the full system is built.",
+                    conc: "The incremental approach is ideal for projects where early delivery of core functions is critical and the full requirement set is not immediately available. It provides a balanced path between the rigidity of waterfall and the chaos of completely unstructured development."
+                }
+            },
+            {
+                id: "m1-8-3", module: 1, marks: 8,
+                q: "Explain Software engineering practice process in detail.",
+                ans: {
+                    def: "Software engineering practice consists of a collection of concepts, principles, methods, and tools a practitioner applies to build high-quality software systems systematically. It ensures that the engineering process is repeatable, manageable, and focused on delivering value to the end-users.",
+                    points: [
+                        { name: "Understand the Problem", desc: "Determine the stakeholders, the data required, and the functions the system must perform to solve user needs. This phase is crucial for ensuring that the development team is building the right product for the right audience under the right conditions." },
+                        { name: "Plan the Solution", desc: "Identify if there are existing patterns or components that can be reused and determine how the technical implementation will proceed. Planning involves choosing the right algorithms, data structures, and architectural styles that best fit the problem's constraints." },
+                        { name: "Carry Out the Plan", desc: "Perform the technical activities like coding and modeling while ensuring implementation follows the established design. This process requires a disciplined approach to version control, documentation, and adhering to industrial coding standards for long-term project health." },
+                        { name: "Examine the Result", desc: "Verify and validate the software against the requirements to ensure that the solution meets user expectations. This step involves executing various testing strategies and holding technical reviews to confirm that the software is technically sound and logically correct." },
+                        { name: "Quality Assurance", desc: "Integrate formal technical reviews and automated testing into the workflow to ensure the product remains robust and error-free. Quality assurance is an ongoing process that monitors every phase of the life cycle to identify and mitigate defects earlier." },
+                        { name: "Documentation", desc: "Create persistent records of the design decisions and code structure to facilitate future maintenance and knowledge sharing. Good documentation acts as a critical knowledge repository, ensuring that future teams can understand and update the system without significant downtime." }
+                    ],
+                    diag: "[Problem] -> (Elicitation) -> [Plan] -> (Design) -> [Execution] -> (Code) -> [Review] -> (Validation) \n                                  |                                                                  ^ \n                                  +----------------------- Continuous Quality Loop -------------------+",
+                    ex: "A bank developer first understands the security needs, plans a multi-layer auth system, codes it according to design, and then runs penetration tests to examine if the results meet the initial safety standards.",
+                    conc: "Consistency in practice allows teams to scale their development efforts without sacrificing the reliability or maintainability of the software product. It provides a standard technical framework that ensures every team member contributes effectively to the overall goals of the project."
+                }
+            },
+            {
+                id: "m1-8-4", module: 1, marks: 8,
+                q: "Explain about Agile unified Process (AUP).",
+                ans: {
+                    def: "The Agile Unified Process (AUP) is a simplified version of the IBM Rational Unified Process (RUP) that applies agile techniques while maintaining a formal structure. It is designed to provide a lightweight yet disciplined approach to developing business software using agile principles.",
+                    points: [
+                        { name: "Streamlined Model", desc: "AUP reduces the complexity of RUP by focusing on only seven key activities: Modeling, Implementation, Testing, Deployment, Configuration, and Management. This simplification allows teams to focus on delivering functional code rather than managing a heavy, bureaucratic process." },
+                        { name: "Serial Maturity", desc: "The project progresses through standard RUP phases—Inception, Elaboration, Construction, and Transition—but execution within phases is iterative. This ensures that the team maintains a long-term vision while remaining flexible enough to handle short-term changes." },
+                        { name: "Agile Principles", desc: "It emphasizes simple design, continuous integration, and frequent releases to ensure fast feedback from the customer. By delivering working software early, the team can validate their architectural decisions and adjust their course based on actual usage." },
+                        { name: "Database Management", desc: "Includes a specific focus on database design and refactoring, which is often neglected in other pure agile methodologies. This ensures that the data storage layer remains efficient and scalable as the application's functional requirements evolve over time." },
+                        { name: "Documentation Balance", desc: "Focuses on 'just-enough' documentation, ensuring that developers have what they need without being bogged down by excessive paperwork. The goal is to create documentation that adds value to the project rather than fulfilling a administrative checkbox." },
+                        { name: "Team Empowerment", desc: "Encourages teams to be self-organizing and cross-functional, reducing the reliance on rigid hierarchical management structures. Empowered teams are more innovative and can respond faster to technical challenges and shifting business requirements." }
+                    ],
+                    diag: "Phase Graph:    Inception | Elaboration | Construction | Transition\nIteration:      Iter 1    | Iter 2,3     | Iter 4,5,6    | Iter 7\nCore Loops:     [Model] --> [Build] --> [Test] --> [Release] --> [Manage]",
+                    ex: "A mid-sized enterprise uses AUP to build a custom CRM, keeping the formal RUP phase approvals for the board while allowing its developers to work in 2-week agile sprints to build features.",
+                    conc: "AUP provides a bridge for organizations that require the oversight and structure of RUP but want the efficiency and responsiveness of Agile development. It manages to balance the needs of corporate governance with the technical demands of modern software engineering."
+                }
+            },
+            {
+                id: "m2-2-1", module: 2, marks: 2,
+                q: "List the Non-functional classifications with examples.",
+                ans: "• Product requirements: Usability, Efficiency (e.g., response time < 2s).<br>• Organizational requirements: Standards, Implementation (e.g., must use Java).<br>• External requirements: Interoperability, Ethical, Legislative (e.g., GDPR compliance)."
+            },
+            {
+                id: "m2-2-2", module: 2, marks: 2,
+                q: "Write the Metrics for specifying Nonfunctional Requirements.",
+                ans: "• Speed: Processed transactions/sec, response time.<br>• Size: Kilo-lines of code, memory usage.<br>• Ease of use: Training time, number of help frames.<br>• Reliability: Mean time to failure, availability %."
+            },
+            {
+                id: "m2-2-3", module: 2, marks: 2,
+                q: "Draw and describe the Flow Modelling notations.",
+                ans: "• Rectangles: External entities/actors initiating data.<br>• Circles/Ovals: Processes or functions transforming data.<br>• Parallel lines: Data stores for persistent storage.<br>• Arrows: Data flow paths between elements."
+            },
+            {
+                id: "m2-2-4", module: 2, marks: 2,
+                q: "What is Requirements Prioritization and Negotiation?",
+                ans: "Requirements prioritization involves ranking requirements based on business value and urgency. Negotiation is the process where stakeholders resolve conflicts and reach a consensus on which requirements will be implemented within specific budget and time constraints."
+            },
+            {
+                id: "m2-8-2", module: 2, marks: 8,
+                q: "Write the Structure of Software Requirement Specification (SRS) Document.",
+                ans: {
+                    def: "The Software Requirement Specification (SRS) is a formal document that describes the functions and constraints of a software system to be developed. It serves as a fundamental contract between the users and the development team, ensuring that both parties have a clear and mutual understanding of the project's technical goals.",
+                    points: [
+                        { name: "Introduction", desc: "Defines the purpose, scope, and objectives of the software. It includes a specific list of definitions for technical terms and an overview of the document structure to help stakeholders navigate the complex requirements described within." },
+                        { name: "General Description", desc: "Describes the product perspective, high-level functions, and unique user characteristics. It outlines general constraints like hardware limitations or regulatory mandates, along with any assumptions and dependencies that might affect the development schedule." },
+                        { name: "Functional Requirements", desc: "Detailed list of specific functionalities the system must perform daily. These are often described using use-case descriptions and data flow diagrams, providing a granular view of how the system handles inputs and generates expected outputs." },
+                        { name: "Non-Functional Requirements", desc: "Specifies performance, security, reliability, and usability constraints the system must strictly adhere to. This includes defining metrics like response time, encryption standards, and uptime percentages to ensure the software is robust and user-friendly." },
+                        { name: "Interface Requirements", desc: "Defines the specific hardware, software, and communication interfaces required to connect the system with external entities. This ensures that the product is interoperable with existing legacy systems and standard network protocols used by the client." },
+                        { name: "Data Requirements", desc: "Outlines the data models, entity-relationship structures, and database constraints necessary for persistent storage. This section ensures that data integrity is maintained through proper normalization and logical design patterns tailored to the application's needs." }
+                    ],
+                    diag: "SRS Layout: \n+-------------------+\n| 1. Introduction   |\n| 2. Overall Desc.  |\n| 3. Functional Req |\n| 4. Non-Func Req   |\n| 5. Ext Interface  |\n| 6. System Schema  |\n+-------------------+",
+                    ex: "An SRS for an automated ATM system would define 'Withdraw Cash' as a primary functional requirement while specifying 'PIN encryption' and '2-second response time' as critical non-functional performance benchmarks.",
+                    conc: "A well-structured SRS document acts as the 'single source of truth' for the entire project life cycle. It prevents scope creep, minimizes expensive rework, and ensures that the final product architectural consistency aligns with stakeholder expectations."
+                }
+            },
+            {
+                id: "m3-2-1", module: 3, marks: 2,
+                q: "What is Software Design and its importance?",
+                ans: "Software design is the process of defining software architecture, components, modules, interfaces, and data for a system. It is important because it provides a blueprint for implementation and ensures that the system meets quality attributes like modularity and maintainability."
+            },
+            {
+                id: "m3-8-1", module: 3, marks: 8,
+                q: "Explain Various Design Concepts in Software Engineering.",
+                ans: {
+                    def: "Design concepts provide the fundamental framework used by software engineers to manage complexity and create a structured model for implementation. These concepts act as the guiding principles that transform abstract requirements into a concrete technical architecture ready for construction.",
+                    points: [
+                        { name: "Abstraction", desc: "Allows developers to focus on high-level logic and data without getting bogged down by low-level implementation details. By suppressing irrelevant details, engineers can create more generalized and reusable solutions that are easier to understand and maintain." },
+                        { name: "Architecture", desc: "Refers to the overall structure of the software, defining the hierarchical components and the ways they interact. A well-defined architecture provides a structural blueprint that ensures system properties like performance and scalability are addressed early in the design phase." },
+                        { name: "Modularity", desc: "The process of dividing software into separately named and addressable components. Proper modularity makes a system easier to test and manage because changes in one module have a limited impact on the rest of the application, promoting functional independence." },
+                        { name: "Information Hiding", desc: "Restricts access to the internal details of a module, exposing only what is necessary through a public interface. This 'black box' approach reduces inter-module coupling and prevents unintended side effects when internal logic is modified or refactored." },
+                        { name: "Refinement", desc: "The top-down process of elaborating high-level abstractions into detailed descriptions of data and functionality. It involves iteratively adding detail to the design until it reaches a level of granularity that can be directly translated into executable code." },
+                        { name: "Functional Independence", desc: "Achieved by developing modules with high cohesion (focused internal logic) and low coupling (minimal dependencies). Independent modules are easier to maintain because their internal logic is isolated from the complexities of the broader system environment." }
+                    ],
+                    diag: "[Abstract Requirement] --(Refine)--> [Architecture] --(Modularize)--> [Independent Modules]\n                                                                         |\n                                                                  (Hide Details)\n                                                                         |\n                                                                  [Public Interface]",
+                    ex: "In an e-commerce application, the 'Payment Gateway' module hides complex banking API calls while providing a simple 'processTransaction()' method to the 'Order Management' module, demonstrating both abstraction and information hiding.",
+                    conc: "Mastering these essential design concepts allows engineers to build scalable and robust systems that can evolve with changing user needs. These principles form the bedrock of disciplined software construction and distinguish professional engineering from simple coding."
+                }
+            },
+            {
+                id: "m4-2-1", module: 4, marks: 2,
+                q: "Define Software Testing and its objective.",
+                ans: "Software testing is the process of executing a program with the intent of finding errors. Its primary objective is to verify that the software meets specified requirements and to ensure that it operates correctly under various conditions."
+            },
+            {
+                id: "m4-8-1", module: 4, marks: 8,
+                q: "Discuss various levels of Software Testing in detail.",
+                ans: {
+                    def: "Testing levels represent the various stages of the software development process where verification and validation are performed. Each level targets different granularities of the system to ensure that both individual components and the integrated whole function correctly.",
+                    points: [
+                        { name: "Unit Testing", desc: "Focuses on verifying the smallest testable parts of the software, such as individual functions or classes, in isolation. This level is usually performed by developers to catch logic errors early before they propagate to larger system modules." },
+                        { name: "Integration Testing", desc: "Tests the interfaces and interactions between combined units or modules to ensure they function together as expected. It helps in identifying issues related to data transfer, shared memory, and communication protocols between different architectural components." },
+                        { name: "System Testing", desc: "The entire system is tested as a integrated whole against the functional and non-functional requirements. This process validates the end-to-end flow of data and ensures the software meets the performance and security standards defined in the project scope." },
+                        { name: "Acceptance Testing", desc: "Conducted by end-users or clients (UAT) to decide whether the software is ready for deployment. It focuses on the business value and usability of the application, ensuring that the final product satisfies the original operational needs of the customer." },
+                        { name: "Regression Testing", desc: "The process of re-running functional and non-functional tests to ensure that previously developed and tested software still performs correctly after a change. It is critical for maintaining stability during iterative development or when new patches are applied." },
+                        { name: "White Box Testing", desc: "Also known as structural testing, it examines the internal logic and paths of the code. Testers use knowledge of the code's internal workings to design test cases that exercise every branch, loop, and condition within the software modules." }
+                    ],
+                    diag: "[Units] --(Int)--> [Integrated Modules] --(Sys)--> [Full System Solution] --(Acc)--> [User Acceptance]\n   |                    |                          |                             |\n   V                    V                          V                             V\n (Code)           (Interfaces)              (Requirements)               (Business Value)",
+                    ex: "A mobile banking app developer first tests the 'Calculate Interest' function (Unit), verifies that the balance updates after a transfer (Integration), and finally checks the complete login-to-payment flow (System) before user sign-off.",
+                    conc: "A multi-layered testing strategy provides a comprehensive safety net that ensures software reliability at every level. By systematically progressing through these stages, organizations can significantly reduce the risk of catastrophic system failures in production environments."
+                }
+            },
+            {
+                id: "m5-2-1", module: 5, marks: 2,
+                q: "What is Software Maintenance and its types?",
+                ans: "Maintenance is the process of modifying software after delivery. Types include: Corrective (fixing bugs), Adaptive (environment changes), Perfective (new features), and Preventive (refactoring for future)."
+            },
+            {
+                id: "m5-8-1", module: 5, marks: 8,
+                q: "Explain about Risk Management in Software Engineering.",
+                ans: {
+                    def: "Risk management is a systematic process of identifying, analyzing, and responding to project risks to minimize their negative impact on the software life cycle. It is a proactive approach that allows project managers to anticipate problems before they occur.",
+                    points: [
+                        { name: "Risk Identification", desc: "A continuous task where the team lists potential threats to the project schedule, budget, or product quality. This involves brainstorming, reviewing historical data, and using specialized checklists to ensure that no technical or organizational vulnerability is overlooked." },
+                        { name: "Risk Assessment", desc: "Evaluating each identified risk to determine its probability of occurrence and its potential impact on the overall project success. Results are documented in a risk table, which helps in understanding which threats pose the greatest danger to the project's health." },
+                        { name: "Risk Prioritization", desc: "Ranking risks based on their severity so the management team can allocate resources effectively. High-priority risks receive immediate attention and detailed planning, while low-priority risks are monitored periodically to ensure they do not escalate over time." },
+                        { name: "Risk Mitigation", desc: "Developing specific strategies to reduce the probability of the risk occurring or to minimize its damaging effects. This might involve assigning more experienced staff to complex tasks or choosing more stable technologies to reduce technical uncertainty." },
+                        { name: "Risk Monitoring", desc: "Continuously tracking the identified risks to check if the mitigation strategies are working. Project managers look for 'risk triggers' that indicate a threat is becoming a reality, allowing for rapid response and adjustment of project plans." },
+                        { name: "Contingency Planning", desc: "Creating detailed 'Plan B' actions that can be triggered immediately if a risk becomes an actual problem. This ensures that the team can recover quickly from setbacks without excessive delay, maintaining the momentum of the development process." }
+                    ],
+                    diag: "[Identify] --> [Analyze] --> [Prioritize] --> [Plan Strategy] \n    ^                                                   | \n    |                                                   V \n    +--------------- [Track & Monitor] <----------------+",
+                    ex: "If a project depends on a third-party API, the risk 'Service Downtime' is identified. Mitigation involves creating a local cache, while the contingency plan is to switch to a secondary provider if the primary service fails for over four hours.",
+                    conc: "Effective risk management transforms a reactive development team into a proactive and resilient one. By systematically addressing uncertainties, project leaders can significantly increase the probability of delivering high-quality software within the established constraints."
+                }
+            }
+        ];
+
+        // State Management
+        let filters = {
+            search: '',
+            module: 'all',
+            marks: 'all'
+        };
+        let revisionMode = false;
+        let starredItems = JSON.parse(localStorage.getItem('se_starred') || '[]');
+        let completedItems = JSON.parse(localStorage.getItem('se_completed') || '[]');
+
+        // DOM Elements
+        const container = document.getElementById('questionsContainer');
+        const searchInput = document.getElementById('searchInput');
+        const moduleFilter = document.getElementById('moduleFilter');
+        const marksFilter = document.getElementById('marksFilter');
+        const revisionToggle = document.getElementById('revisionToggle');
+        const showAllBtn = document.getElementById('showAllBtn');
+        const hideAllBtn = document.getElementById('hideAllBtn');
+        const scrollTop = document.getElementById('scrollTop');
+        
+        const statTotal = document.getElementById('statTotal');
+        const statCompleted = document.getElementById('statCompleted');
+        const statImportant = document.getElementById('statImportant');
+        const progressFill = document.getElementById('progressFill');
+
+        // Functions
+        function renderQuestions() {
+            const filtered = questionData.filter(item => {
+                const matchesSearch = item.q.toLowerCase().includes(filters.search.toLowerCase()) || 
+                                    (typeof item.ans === 'string' ? item.ans : JSON.stringify(item.ans)).toLowerCase().includes(filters.search.toLowerCase());
+                const matchesModule = filters.module === 'all' || item.module == filters.module;
+                const matchesMarks = filters.marks === 'all' || item.marks == filters.marks;
+                return matchesSearch && matchesModule && matchesMarks;
+            });
+
+            container.innerHTML = '';
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="empty-state">No questions found matching your criteria.</div>';
+                updateStats(0);
+                return;
+            }
+
+            // Group by module for display
+            const modules = [...new Set(filtered.map(f => f.module))].sort();
+            
+            modules.forEach(mod => {
+                const section = document.createElement('div');
+                section.className = 'module-section animate-fade';
+                section.innerHTML = `<h2 class="module-title" id="mod-${mod}">Module ${String.fromCharCode(72 + mod).replace('I', 'I').replace('J', 'II').replace('K', 'III').replace('L', 'IV').replace('M', 'V')}</h2>`;
+                
+                // 2 Marks sub-section
+                const m2 = filtered.filter(f => f.module === mod && f.marks === 2);
+                if (m2.length > 0) {
+                    section.innerHTML += `<div class="section-header"><span>🔹</span> 2 MARK QUESTIONS</div>`;
+                    m2.forEach(q => section.appendChild(createCard(q)));
+                }
+
+                // 8 Marks sub-section
+                const m8 = filtered.filter(f => f.module === mod && f.marks === 8);
+                if (m8.length > 0) {
+                    section.innerHTML += `<div class="section-header"><span>🔹</span> 8 MARK QUESTIONS</div>`;
+                    m8.forEach(q => section.appendChild(createCard(q)));
+                }
+
+                container.appendChild(section);
+            });
+
+            updateStats(filtered.length);
+        }
+
+        function createCard(data) {
+            const card = document.createElement('div');
+            card.className = `card ${revisionMode ? 'revision-mode-item' : ''}`;
+            card.id = `card-${data.id}`;
+            
+            const isStarred = starredItems.includes(data.id);
+            const isCompleted = completedItems.includes(data.id);
+            const badgeClass = data.marks === 2 ? 'badge-2m' : 'badge-8m';
+
+            let answerHtml = '';
+            if (data.marks === 2) {
+                answerHtml = `<p class="ans-text">${data.ans}</p>`;
+            } else {
+                const a = data.ans;
+                answerHtml = `
+                    <div class="ans-section">
+                        <span class="section-title">1. DEFINITION</span>
+                        <p class="ans-text">${a.def}</p>
+                    </div>
+                    <div class="ans-section">
+                        <span class="section-title">2. MAIN ANSWER</span>
+                        <div class="ans-list">
+                            ${a.points.map(p => `
+                                <div class="point-item">
+                                    <span class="point-name">${p.name}:</span> ${p.desc}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="ans-section">
+                        <span class="section-title">3. DIAGRAM / STRUCTURE</span>
+                        <div class="diagram-box">${a.diag}</div>
+                    </div>
+                    <div class="ans-section">
+                        <span class="section-title">4. EXAMPLE / APPLICATION</span>
+                        <p class="ans-text">${a.ex}</p>
+                    </div>
+                    <div class="ans-section">
+                        <span class="section-title">5. CONCLUSION</span>
+                        <p class="ans-text">${a.conc}</p>
+                    </div>
+                `;
+            }
+
+            card.innerHTML = `
+                <div class="card-header">
+                    <div class="question-text">
+                        <span class="badge ${badgeClass}">${data.marks} Marks</span>
+                        ${data.q}
+                    </div>
+                    <div class="card-actions">
+                        <span class="action-icon star-btn ${isStarred ? 'starred' : ''}" title="Mark as Important">★</span>
+                        <span class="action-icon check-btn ${isCompleted ? 'completed' : ''}" title="Mark as Completed">✔</span>
+                        <span class="arrow">▼</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    ${answerHtml}
+                </div>
+            `;
+
+            // Expand logic
+            card.querySelector('.card-header').addEventListener('click', (e) => {
+                if (e.target.classList.contains('action-icon')) return;
+                
+                if (revisionMode) {
+                    card.classList.toggle('revealed');
+                } else {
+                    card.classList.toggle('expanded');
+                }
+            });
+
+            // Star logic
+            card.querySelector('.star-btn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (starredItems.includes(data.id)) {
+                    starredItems = starredItems.filter(id => id !== data.id);
+                    e.target.classList.remove('starred');
+                } else {
+                    starredItems.push(data.id);
+                    e.target.classList.add('starred');
+                }
+                localStorage.setItem('se_starred', JSON.stringify(starredItems));
+                updateStats();
+            });
+
+            // Complete logic
+            card.querySelector('.check-btn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (completedItems.includes(data.id)) {
+                    completedItems = completedItems.filter(id => id !== data.id);
+                    e.target.classList.remove('completed');
+                } else {
+                    completedItems.push(data.id);
+                    e.target.classList.add('completed');
+                }
+                localStorage.setItem('se_completed', JSON.stringify(completedItems));
+                updateStats();
+            });
+
+            return card;
+        }
+
+        function updateStats(visibleCount) {
+            if (visibleCount !== undefined) statTotal.innerText = visibleCount;
+            statCompleted.innerText = completedItems.length;
+            statImportant.innerText = starredItems.length;
+            
+            const total = questionData.length;
+            const progress = total > 0 ? (completedItems.length / total) * 100 : 0;
+            if (progressFill) progressFill.style.width = `${progress}%`;
+        }
+
+        // Event Listeners
+        searchInput.addEventListener('input', (e) => {
+            filters.search = e.target.value;
+            renderQuestions();
+        });
+
+        moduleFilter.addEventListener('change', (e) => {
+            filters.module = e.target.value;
+            renderQuestions();
+        });
+
+        marksFilter.addEventListener('change', (e) => {
+            filters.marks = e.target.value;
+            renderQuestions();
+        });
+
+        revisionToggle.addEventListener('click', () => {
+            revisionMode = !revisionMode;
+            revisionToggle.classList.toggle('active');
+            document.body.classList.toggle('revision-mode', revisionMode);
+            renderQuestions();
+        });
+
+        showAllBtn.addEventListener('click', () => {
+            document.querySelectorAll('.card').forEach(c => c.classList.add('expanded'));
+        });
+
+        hideAllBtn.addEventListener('click', () => {
+            document.querySelectorAll('.card').forEach(c => {
+                c.classList.remove('expanded');
+                c.classList.remove('revealed');
+            });
+        });
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                scrollTop.classList.add('visible');
+            } else {
+                scrollTop.classList.remove('visible');
+            }
+        });
+
+        scrollTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Initialize
+        renderQuestions();
+
+    </script>
+</body>
+</html>
