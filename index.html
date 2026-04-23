@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f0fdf4">
     <title>Software Engineering Question Bank System</title>
     <!-- Inter Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -45,7 +46,7 @@
             background-color: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border);
-            padding: 0.75rem 2rem;
+            padding: 0.75rem 1.5rem;
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -53,6 +54,12 @@
             justify-content: space-between;
             align-items: center;
             height: 64px;
+        }
+
+        @media (max-width: 600px) {
+            .navbar { padding: 0.75rem 1rem; }
+            .nav-brand { font-size: 12px; }
+            .count-pill { padding: 1px 6px; font-size: 9px; }
         }
 
         .nav-brand {
@@ -117,6 +124,17 @@
             top: 64px;
             height: calc(100vh - 64px);
             overflow-y: auto;
+        }
+
+        @media (max-width: 900px) {
+            .sidebar {
+                position: relative;
+                top: 0;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                padding: 1.25rem;
+            }
         }
 
         .search-box {
@@ -254,6 +272,14 @@
         #mainContent {
             padding: 2rem;
             background-color: transparent;
+        }
+
+        @media (max-width: 600px) {
+            #mainContent { padding: 1.25rem 1rem; }
+            .card-header { padding: 12px 16px; }
+            .card-body { padding: 16px 20px; font-size: 13.5px; }
+            .module-title { font-size: 18px; }
+            .badge { margin-right: 8px; }
         }
 
         .module-section {
