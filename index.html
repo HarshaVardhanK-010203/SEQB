@@ -410,29 +410,31 @@
             padding-bottom: 4px; 
         }
 
-        .ans-text { font-size: 14px; line-height: 1.6; color: var(--text); }
+        .ans-text { font-size: 14.5px; line-height: 1.6; color: #334155; }
         
         .point-item { 
             margin-bottom: 12px; 
-            border-left: 2px solid var(--border); 
+            border-left: 2px solid #dcfce7; 
             padding-left: 16px; 
-            font-size: 14px;
+            font-size: 14.5px;
+            color: #475569;
         }
         
-        .point-name { font-weight: 700; color: #fff; margin-right: 4px; }
+        .point-name { font-weight: 700; color: #16a34a; margin-right: 4px; }
 
         .diagram-box {
             font-family: var(--mono);
-            background: #161b22;
-            padding: 16px;
-            border-radius: 6px;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
             font-size: 12px;
             margin: 16px 0;
-            color: var(--success);
-            line-height: 1.3;
+            color: #059669;
+            line-height: 1.4;
             overflow-x: auto;
             white-space: pre;
-            border: 1px solid var(--border);
+            border: 1px solid #e2e8f0;
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
         }
 
         /* Revision Mode */
@@ -2312,19 +2314,30 @@
             modules.forEach(mod => {
                 const section = document.createElement('div');
                 section.className = 'module-section animate-fade';
-                section.innerHTML = `<h2 class="module-title" id="mod-${mod}">Module ${String.fromCharCode(72 + mod).replace('I', 'I').replace('J', 'II').replace('K', 'III').replace('L', 'IV').replace('M', 'V')}</h2>`;
+                
+                const modTitle = document.createElement('h2');
+                modTitle.className = 'module-title';
+                modTitle.id = `mod-${mod}`;
+                modTitle.innerText = `Module ${String.fromCharCode(72 + mod).replace('I', 'I').replace('J', 'II').replace('K', 'III').replace('L', 'IV').replace('M', 'V')}`;
+                section.appendChild(modTitle);
                 
                 // 2 Marks sub-section
                 const m2 = filtered.filter(f => f.module === mod && f.marks === 2);
                 if (m2.length > 0) {
-                    section.innerHTML += `<div class="section-header"><span>🔹</span> 2 MARK QUESTIONS</div>`;
+                    const h2 = document.createElement('div');
+                    h2.className = 'section-header';
+                    h2.innerHTML = `<span>🔹</span> 2 MARK QUESTIONS`;
+                    section.appendChild(h2);
                     m2.forEach(q => section.appendChild(createCard(q)));
                 }
 
                 // 8 Marks sub-section
                 const m8 = filtered.filter(f => f.module === mod && f.marks === 8);
                 if (m8.length > 0) {
-                    section.innerHTML += `<div class="section-header"><span>🔹</span> 8 MARK QUESTIONS</div>`;
+                    const h8 = document.createElement('div');
+                    h8.className = 'section-header';
+                    h8.innerHTML = `<span>🔹</span> 8 MARK QUESTIONS`;
+                    section.appendChild(h8);
                     m8.forEach(q => section.appendChild(createCard(q)));
                 }
 
@@ -2344,31 +2357,44 @@
                 answerHtml = `<p class="ans-text">${data.ans}</p>`;
             } else {
                 const a = data.ans;
+                
+                // Helper to generate relevant headings
+                const getTopic = (q) => {
+                    let text = q.replace(/^(Describe|Explain|Discuss|Illustrate|Compare|State|Demonstrate|Identify|Inspect|Distinguish|List and explain|Name and describe|State and explain)\s+/i, '');
+                    text = text.replace(/about\s+/i, '');
+                    text = text.replace(/concept of\s+/i, '');
+                    text = text.replace(/in detail\s+/i, '');
+                    text = text.replace(/\?$/, '');
+                    return text.charAt(0).toUpperCase() + text.slice(1);
+                };
+
+                const topic = getTopic(data.q);
+
                 answerHtml = `
                     <div class="ans-section">
-                        <span class="section-title">1. DEFINITION</span>
+                        <span class="section-title">CONCEPT OVERVIEW: ${topic.toUpperCase()}</span>
                         <p class="ans-text">${a.def}</p>
                     </div>
                     <div class="ans-section">
-                        <span class="section-title">2. MAIN ANSWER</span>
+                        <span class="section-title">CORE TECHNICAL POINTS</span>
                         <div class="ans-list">
-                            ${a.points.map(p => `
+                            ${a.points.map((p, idx) => `
                                 <div class="point-item">
-                                    <span class="point-name">${p.name}:</span> ${p.desc}
+                                    <span class="point-name">${idx + 1}. ${p.name}:</span> ${p.desc}
                                 </div>
                             `).join('')}
                         </div>
                     </div>
                     <div class="ans-section">
-                        <span class="section-title">3. DIAGRAM / STRUCTURE</span>
+                        <span class="section-title">VISUAL REPRESENTATION / FLOW</span>
                         <div class="diagram-box">${a.diag}</div>
                     </div>
                     <div class="ans-section">
-                        <span class="section-title">4. EXAMPLE / APPLICATION</span>
+                        <span class="section-title">APPLICATION & SCENARIO</span>
                         <p class="ans-text">${a.ex}</p>
                     </div>
                     <div class="ans-section">
-                        <span class="section-title">5. CONCLUSION</span>
+                        <span class="section-title">COMPREHENSIVE SUMMARY</span>
                         <p class="ans-text">${a.conc}</p>
                     </div>
                 `;
